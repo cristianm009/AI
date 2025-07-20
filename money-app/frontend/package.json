@@ -1,0 +1,36 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --port 4200",
+    "build": "ng build",
+    "serve": "ng serve --port 4200 --host 0.0.0.0",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@angular/animations": "^20.1.2",
+    "@angular/cdk": "^20.1.2",
+    "@angular/common": "^20.1.2",
+    "@angular/core": "^20.1.2",
+    "@angular/forms": "^20.1.2",
+    "@angular/material": "^20.1.2",
+    "@angular/platform-browser": "^20.1.2",
+    "@angular/platform-browser-dynamic": "^20.1.2",
+    "@angular/router": "^20.1.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^20.1.1",
+    "@angular/cli": "^20.1.1",
+    "typescript": "^5.8.3",
+    "webpack": "^5.100.2",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
+  }
+}
