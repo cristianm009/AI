@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-transaction-list',
+  standalone: false,
   template: `
     <div class="transaction-list-card">
       <h2>Recent Transactions</h2>
@@ -21,8 +22,26 @@ import { Component, Input } from '@angular/core';
               <span class="category">{{ transaction.category }}</span>
               <span class="date">{{ formatDate(transaction.date) }}</span>
             </div>
-            <div class="amount" [ngClass]="transaction.amount >= 0 ? 'positive' : 'negative'">
-              {{ transaction.amount >= 0 ? '+' : '' }}\${{ Math.abs(transaction.amount).toFixed(2) }}
+            <div class="transaction-actions">
+              <div class="amount" [ngClass]="transaction.amount >= 0 ? 'positive' : 'negative'">
+                {{ transaction.amount >= 0 ? '+' : '' }}\${{ Math.abs(transaction.amount).toFixed(2) }}
+              </div>
+              <div class="action-buttons">
+                <button 
+                  class="edit-btn" 
+                  (click)="editTransaction(transaction)"
+                  title="Edit transaction"
+                >
+                  ✏️
+                </button>
+                <button 
+                  class="delete-btn" 
+                  (click)="deleteTransaction(transaction)"
+                  title="Delete transaction"
+                >
+                  🗑️
+                </button>
+              </div>
             </div>
           </div>
           
@@ -54,6 +73,10 @@ import { Component, Input } from '@angular/core';
 })
 export class TransactionListComponent {
   @Input() transactions: any[] = [];
+  @Output() editRequested = new EventEmitter<any>();
+  @Output() deleteRequested = new EventEmitter<any>();
+  
+  Math = Math; // Make Math available in template
 
   get sortedTransactions() {
     return [...this.transactions].sort((a, b) => 
@@ -75,6 +98,16 @@ export class TransactionListComponent {
 
   get netBalance() {
     return this.transactions.reduce((sum, t) => sum + t.amount, 0);
+  }
+
+  editTransaction(transaction: any) {
+    this.editRequested.emit(transaction);
+  }
+
+  async deleteTransaction(transaction: any) {
+    if (confirm(`Are you sure you want to delete this ${transaction.category} transaction for $${Math.abs(transaction.amount).toFixed(2)}?`)) {
+      this.deleteRequested.emit(transaction);
+    }
   }
 
   formatDate(dateString: string): string {

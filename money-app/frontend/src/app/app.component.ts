@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
+  standalone: false,
   template: `
     <div class="app-container">
       <header class="header">
@@ -15,8 +16,17 @@ import { Component } from '@angular/core';
       </header>
       
       <main class="main-content">
-        <app-add-transaction (transactionAdded)="onTransactionAdded($event)"></app-add-transaction>
-        <app-transaction-list [transactions]="transactions"></app-transaction-list>
+        <app-add-transaction 
+          [editingTransaction]="editingTransaction"
+          (transactionAdded)="onTransactionAdded($event)"
+          (transactionUpdated)="onTransactionUpdated($event)"
+          (editCancelled)="onEditCancelled()"
+        ></app-add-transaction>
+        <app-transaction-list 
+          [transactions]="transactions"
+          (editRequested)="onEditRequested($event)"
+          (deleteRequested)="onDeleteRequested($event)"
+        ></app-transaction-list>
       </main>
     </div>
   `,
@@ -25,6 +35,7 @@ import { Component } from '@angular/core';
 export class AppComponent {
   transactions: any[] = [];
   balance: number = 0;
+  editingTransaction: any = null;
 
   constructor() {
     this.loadTransactions();
@@ -43,6 +54,40 @@ export class AppComponent {
   async onTransactionAdded(transaction: any) {
     this.transactions.push(transaction);
     this.calculateBalance();
+  }
+
+  async onTransactionUpdated(updatedTransaction: any) {
+    const index = this.transactions.findIndex(t => t.id === updatedTransaction.id);
+    if (index !== -1) {
+      this.transactions[index] = updatedTransaction;
+      this.calculateBalance();
+    }
+    this.editingTransaction = null;
+  }
+
+  onEditRequested(transaction: any) {
+    this.editingTransaction = transaction;
+  }
+
+  onEditCancelled() {
+    this.editingTransaction = null;
+  }
+
+  async onDeleteRequested(transaction: any) {
+    try {
+      const response = await fetch(`http://localhost:3000/api/transactions/${transaction.id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        this.transactions = this.transactions.filter(t => t.id !== transaction.id);
+        this.calculateBalance();
+      } else {
+        console.error('Error deleting transaction');
+      }
+    } catch (error) {
+      console.error('Error deleting transaction:', error);
+    }
   }
 
   calculateBalance() {

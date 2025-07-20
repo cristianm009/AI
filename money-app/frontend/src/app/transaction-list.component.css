@@ -58,6 +58,40 @@
   gap: 5px;
 }
 
+.transaction-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn, .delete-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.edit-btn:hover {
+  background-color: #e3f2fd;
+}
+
+.delete-btn:hover {
+  background-color: #ffebee;
+}
+
+.edit-btn:focus, .delete-btn:focus {
+  outline: 2px solid #2196F3;
+  outline-offset: 2px;
+}
+
 .category {
   font-weight: bold;
   color: #333;
@@ -118,7 +152,17 @@
     gap: 10px;
   }
   
-  .amount {
-    align-self: flex-end;
+  .transaction-actions {
+    align-self: stretch;
+    justify-content: space-between;
+  }
+  
+  .action-buttons {
+    gap: 12px;
+  }
+  
+  .edit-btn, .delete-btn {
+    padding: 6px 10px;
+    font-size: 18px;
   }
 }

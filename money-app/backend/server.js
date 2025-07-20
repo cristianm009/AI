@@ -58,6 +58,45 @@ app.get('/api/categories', (req, res) => {
   res.json(categories);
 });
 
+// Update transaction
+app.put('/api/transactions/:id', (req, res) => {
+  const { id } = req.params;
+  const { amount, category, date, notes } = req.body;
+  
+  if (!amount || !category || !date) {
+    return res.status(400).json({ error: 'Amount, category, and date are required' });
+  }
+
+  const transactionIndex = transactions.findIndex(t => t.id === id);
+  
+  if (transactionIndex === -1) {
+    return res.status(404).json({ error: 'Transaction not found' });
+  }
+
+  transactions[transactionIndex] = {
+    ...transactions[transactionIndex],
+    amount: parseFloat(amount),
+    category,
+    date,
+    notes: notes || ''
+  };
+
+  res.json(transactions[transactionIndex]);
+});
+
+// Delete transaction
+app.delete('/api/transactions/:id', (req, res) => {
+  const { id } = req.params;
+  const transactionIndex = transactions.findIndex(t => t.id === id);
+  
+  if (transactionIndex === -1) {
+    return res.status(404).json({ error: 'Transaction not found' });
+  }
+
+  const deletedTransaction = transactions.splice(transactionIndex, 1)[0];
+  res.json(deletedTransaction);
+});
+
 app.get('/api/balance', (req, res) => {
   const balance = transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
   res.json({ balance });
